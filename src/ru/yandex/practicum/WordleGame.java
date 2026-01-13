@@ -50,8 +50,9 @@ public class WordleGame {
     }
 
     public void play() {
-        System.out.println("Я загадал слово из 5 букв. Начинаем игру!");
+        System.out.println("Я загадал слово из %s букв. Начинаем игру!".formatted(rules.WORD_LENGTH()));
         while (!resolved && steps != rules.ATTEMPTS()) {
+            logger.log("Игрой цикл запущен. Осталось попыток: %d".formatted(rules.ATTEMPTS() - steps));
             System.out.println("Осталось попыток: %d".formatted(rules.ATTEMPTS() - steps));
             System.out.println("Попробуй угадать слово.");
             String guess = makeGuess();
@@ -59,6 +60,7 @@ public class WordleGame {
                 resolved = true;
                 break;
             }
+            // TODO сделать try-catch и останавливать игру с сообщением. Стек-трейс ошибки писать в лог-файл
             processGuess(guess);
             steps += 1;
         }
@@ -72,21 +74,31 @@ public class WordleGame {
 
     private String makeGuess() {
         String guess = scanner.next();
+        logger.log("Пользователь ввел слово: %s".formatted(guess));
         validateGuess(guess);
         return guess;
     }
 
     private void validateGuess(String guess) {
         if (guess.isEmpty() || guess.isBlank()) {
+            // TODO необходимо запрашивать снова?
+            logger.log("Игра остановлена: пустой ввод пользователя");
             throw new IllegalWordException("Слово не должно быть пустым");
+        }
+
+        if (guess.length() != rules.WORD_LENGTH()) {
+            logger.log("Игра остановлена: пользователь ввел слово недопустимой длины");
+            throw new IllegalWordException("Недопустимая длина слова. Текущие правила по длине слова: %d символов".formatted(rules.WORD_LENGTH()));
         }
 
         for (Character symbol : guess.toCharArray()) {
             // если есть хоть один некириллический символ
             if (Character.UnicodeBlock.of(symbol) != Character.UnicodeBlock.CYRILLIC) {
-                throw new IllegalWordException("Слово содержит недопустимый символ: %s".formatted(symbol));
+                logger.log("Игра остановлена: пользователь ввел слово, содержащее некиреллические символы или цифры");
+                throw new IllegalWordException("Слово содержит недопустимый символ '%s'".formatted(symbol));
             }
         }
+        logger.log("Слово удовлетворяет условиям");
     }
 
     private void processGuess(String guess) {
