@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 public class Wordle {
     private static final Rules RULES = new Rules(5, 6);
+
     public static void main(String[] args) throws IOException {
         Logger logger = new GameLogger();
         WordleDictionaryLoader dictionaryLoader = new WordleDictionaryLoader(RULES, logger);
