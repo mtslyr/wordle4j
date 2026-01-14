@@ -122,9 +122,8 @@ public class WordleDictionary {
                         }
                     }
                 }
-            }
-            // удаляем слова, не содержащие отгаданные символы на своих позициях
-            else {
+            } else {
+                // удаляем слова, не содержащие отгаданные символы на своих позициях
                 for (String word : tipsCandidates) {
                     int wordIndex = Integer.valueOf(entry.getValue());
                     if (word.charAt(wordIndex) != entry.getKey()) {
