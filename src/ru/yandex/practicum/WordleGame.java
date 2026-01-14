@@ -139,13 +139,11 @@ public class WordleGame {
             // если символ на своем месте
             if (answer.contains(Character.toString(symbol)) && answer.charAt(i) == symbol) {
                 resolution.append(CORRECT);
-            }
-            // если символ не на своем месте
-            else if (answer.contains(Character.toString(symbol)) && answer.charAt(i) != symbol) {
+            } else if (answer.contains(Character.toString(symbol)) && answer.charAt(i) != symbol) {
+                // если символ не на своем месте
                 resolution.append(WRONG_POSITION);
-            }
-            // если символ отсутсвет в загаданном слове
-            else if (!answer.contains(Character.toString(symbol))) {
+            } else if (!answer.contains(Character.toString(symbol))) {
+                // если символ отсутсвет в загаданном слове
                 resolution.append(MISSING);
             }
         }
