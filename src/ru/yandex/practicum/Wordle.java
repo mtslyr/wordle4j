@@ -1,5 +1,8 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.logger.GameLogger;
+import ru.yandex.practicum.logger.Logger;
+
 import java.io.IOException;
 
 /*
@@ -14,7 +17,7 @@ import java.io.IOException;
 public class Wordle {
     private static final Rules RULES = new Rules(5, 6);
     public static void main(String[] args) throws IOException {
-        GameLogger logger = new GameLogger();
+        Logger logger = new GameLogger();
         WordleDictionaryLoader dictionaryLoader = new WordleDictionaryLoader(RULES, logger);
         WordleDictionary dictionary = dictionaryLoader.loadDictionary();
         WordleGame game = new WordleGame(dictionary, logger, RULES);

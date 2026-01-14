@@ -1,5 +1,7 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.logger.Logger;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,9 +19,9 @@ public class WordleDictionaryLoader {
 
     private static final String DICTIONARY_FILE_NAME = "words_ru.txt";
     private final Rules rules;
-    private final GameLogger logger;
-    private final List<String> entireDictionary;
-    public WordleDictionaryLoader(Rules rules, GameLogger logger) {
+    private final Logger logger;
+    public final List<String> entireDictionary;
+    public WordleDictionaryLoader(Rules rules, Logger logger) {
         this.rules = rules;
         this.logger = logger;
         entireDictionary = new ArrayList<>();
@@ -60,5 +62,9 @@ public class WordleDictionaryLoader {
         }
 
         return normalized;
+    }
+
+    public List<String> getEntireDictionary() {
+        return entireDictionary;
     }
 }

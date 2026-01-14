@@ -1,32 +1,34 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class GameLogger {
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy–HH:mm");
+public class GameLogger implements Logger {
 
     private BufferedWriter writer;
 
     public GameLogger() throws IOException {
-        this.writer = new BufferedWriter(new FileWriter(createLogFile()));
+        this.writer = new BufferedWriter(new FileWriter(createLogFile(), true));
+        writer.write("*****************\n");
+        writer.write("Н О В А Я   И Г Р А\n");
+        writer.write("*****************\n");
     }
 
     private static File createLogFile() {
-        String logSuffix = FORMATTER.format(new Date());
-        Path logFile = Paths.get(System.getProperty("user.dir"),"logs", "log_%s.log".formatted(logSuffix));
+        Path logFile = Paths.get(System.getProperty("user.dir"), "logs", "GameLog.log");
         try {
             if (!Files.exists(logFile.getParent())) {
                 Files.createDirectory(logFile.getParent());
             }
             Files.createFile(logFile);
+        } catch (FileAlreadyExistsException ignored) {
+
         } catch (IOException e) {
             System.out.println("Ошибка при создании лог-файла");
             e.printStackTrace();
@@ -35,6 +37,7 @@ public class GameLogger {
         return logFile.toFile();
     }
 
+    @Override
     public void log(String message) {
         try {
             writer.write(message);
