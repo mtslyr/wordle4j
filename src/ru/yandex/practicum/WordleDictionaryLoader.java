@@ -21,6 +21,7 @@ public class WordleDictionaryLoader {
     private final Rules rules;
     private final Logger logger;
     public final List<String> entireDictionary;
+
     public WordleDictionaryLoader(Rules rules, Logger logger) {
         this.rules = rules;
         this.logger = logger;
@@ -52,6 +53,7 @@ public class WordleDictionaryLoader {
             }
         }
     }
+
     private List<String> normalizeDictionary() {
         logger.log("Нормализую словарь согласно правилам игры: длинна слов – %d символов".formatted(rules.WORD_LENGTH()));
         List<String> normalized = new ArrayList<>();
