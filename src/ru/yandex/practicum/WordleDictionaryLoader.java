@@ -3,8 +3,8 @@ package ru.yandex.practicum;
 import ru.yandex.practicum.logger.Logger;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class WordleDictionaryLoader {
     private static final String DICTIONARY_FILE_NAME = "words_ru.txt";
     private final Rules rules;
     private final Logger logger;
-    public final List<String> entireDictionary;
+    private final List<String> entireDictionary;
 
     public WordleDictionaryLoader(Rules rules, Logger logger) {
         this.rules = rules;
@@ -39,11 +39,13 @@ public class WordleDictionaryLoader {
     private void readDictionaryFile() {
         logger.log("Читаю файл со словами.");
         Path dictionaryFile = Paths.get(System.getProperty("user.dir"), DICTIONARY_FILE_NAME);
-        try (BufferedReader br = new BufferedReader(new FileReader(dictionaryFile.toFile()))) {
+        try (BufferedReader br = Files.newBufferedReader(dictionaryFile)) {
             while (br.ready()) {
                 String word = br.readLine();
-                if (!word.isBlank() && !word.isEmpty()) {
+                if (wordIsValid(word)) {
                     entireDictionary.add(word);
+                } else {
+                    logger.log("Слово из файла не прошло проверку: '%s'".formatted(word));
                 }
             }
         } catch (IOException exception) {
@@ -55,10 +57,10 @@ public class WordleDictionaryLoader {
     }
 
     private List<String> normalizeDictionary() {
-        logger.log("Нормализую словарь согласно правилам игры: длинна слов – %d символов".formatted(rules.WORD_LENGTH()));
+        logger.log("Нормализую словарь согласно правилам игры: длинна слов – %d символов".formatted(rules.wordLength()));
         List<String> normalized = new ArrayList<>();
         for (String word : entireDictionary) {
-            if (word.length() == rules.WORD_LENGTH()) {
+            if (word.length() == rules.wordLength()) {
                 normalized.add(word);
             }
         }
@@ -66,7 +68,26 @@ public class WordleDictionaryLoader {
         return normalized;
     }
 
+    private boolean wordIsValid(String word) {
+        if (word.isBlank()) {
+            return false;
+        }
+
+        for (char symbol : word.toCharArray()) {
+            if (symbol == '-') {
+                // поскольку данный символ не относится к кириллическим валидация слова не пройдет,
+                // даже если остальные символы кириллические
+                continue;
+            }
+            if (Character.UnicodeBlock.of(symbol) != Character.UnicodeBlock.CYRILLIC) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public List<String> getEntireDictionary() {
-        return entireDictionary;
+        return List.copyOf(entireDictionary);
     }
 }

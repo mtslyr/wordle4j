@@ -1,4 +1,4 @@
 package ru.yandex.practicum;
 
-public record Rules(Integer WORD_LENGTH, Integer ATTEMPTS) {
+public record Rules(Integer wordLength, Integer attempts) {
 }

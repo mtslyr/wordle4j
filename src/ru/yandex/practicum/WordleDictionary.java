@@ -4,7 +4,9 @@ import ru.yandex.practicum.logger.Logger;
 
 import java.util.*;
 
-import static ru.yandex.practicum.WordleGame.*;
+import static ru.yandex.practicum.WordleGame.MISSING;
+import static ru.yandex.practicum.WordleGame.CORRECT;
+import static ru.yandex.practicum.WordleGame.WRONG_POSITION;
 
 /*
 этот класс содержит в себе список слов List<String>
@@ -14,7 +16,7 @@ import static ru.yandex.practicum.WordleGame.*;
 public class WordleDictionary {
     private final Logger logger;
 
-    private List<String> words;
+    private final List<String> words;
 
 
     public WordleDictionary(List<String> words, Logger logger) {
@@ -25,7 +27,7 @@ public class WordleDictionary {
     public String getRandomWord() {
         logger.log("Выбираю случайное слово.");
         Random random = new Random();
-        int r = random.nextInt(0, words.size());
+        int r = random.nextInt(words.size());
         return words.get(r);
     }
 

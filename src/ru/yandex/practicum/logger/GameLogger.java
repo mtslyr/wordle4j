@@ -4,37 +4,36 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 
 public class GameLogger implements Logger {
 
-    private BufferedWriter writer;
+    private final BufferedWriter writer;
 
     public GameLogger() throws IOException {
-        this.writer = new BufferedWriter(new FileWriter(createLogFile(), true));
+        this.writer = createLogFile();
         writer.write("*****************\n");
         writer.write("Н О В А Я   И Г Р А\n");
         writer.write("*****************\n");
     }
 
-    private static File createLogFile() {
+    private static BufferedWriter createLogFile() {
         Path logFile = Paths.get(System.getProperty("user.dir"), "logs", "GameLog.log");
+        BufferedWriter writer = null;
         try {
-            if (!Files.exists(logFile.getParent())) {
-                Files.createDirectory(logFile.getParent());
-            }
-            Files.createFile(logFile);
-        } catch (FileAlreadyExistsException ignored) {
-
+            writer = Files.newBufferedWriter(
+                    logFile,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
         } catch (IOException e) {
             System.out.println("Ошибка при создании лог-файла");
             e.printStackTrace();
         }
 
-        return logFile.toFile();
+        return writer;
     }
 
     @Override
@@ -49,6 +48,7 @@ public class GameLogger implements Logger {
 
     }
 
+    @Override
     public void close() throws IOException {
         writer.close();
     }

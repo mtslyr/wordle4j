@@ -24,6 +24,9 @@ public class WordleGame {
     public static final char MISSING = '-';
     public static final char CORRECT = '+';
     public static final char WRONG_POSITION = '^';
+
+    private static final String GUESS_FOR_TIP = "";
+
     private final Scanner scanner;
 
     private final Logger logger;
@@ -57,16 +60,16 @@ public class WordleGame {
         this.answer = dictionary.getRandomWord();
         logger.log("Игра создана. Загаданное слово: %s".formatted(answer));
         logger.log("Правила игры: длинна слова – %d символов, количество попыток – %d"
-                .formatted(rules.WORD_LENGTH(), rules.ATTEMPTS())
+                .formatted(rules.wordLength(), rules.attempts())
         );
     }
 
     public void play() {
-        System.out.println("Я загадал слово из %s букв. Начинаем игру!".formatted(rules.WORD_LENGTH()));
-        while (!resolved && steps != rules.ATTEMPTS()) {
+        System.out.println("Я загадал слово из %s букв. Начинаем игру!".formatted(rules.wordLength()));
+        while (!resolved && steps != rules.attempts()) {
             tipRequested = false;
-            logger.log("Игрой цикл запущен. Осталось попыток: %d".formatted(rules.ATTEMPTS() - steps));
-            System.out.println("Осталось попыток: %d".formatted(rules.ATTEMPTS() - steps));
+            logger.log("Игрой цикл запущен. Осталось попыток: %d".formatted(rules.attempts() - steps));
+            System.out.println("Осталось попыток: %d".formatted(rules.attempts() - steps));
             System.out.println("Попробуй угадать слово.");
 
             try {
@@ -96,7 +99,7 @@ public class WordleGame {
     private void makeGuess() {
         String guess = scanner.nextLine();
         if (!guess.isEmpty()) {
-            logger.log("Пользователь ввел слово: %s".formatted(guess));
+            logger.log("Пользователь ввел слово: '%s'".formatted(guess));
             if (guess.equals(answer)) {
                 resolved = true;
                 return;
@@ -113,13 +116,18 @@ public class WordleGame {
         } else {
             logger.log("Пользователь просит подсказку.");
             tipRequested = true;
-            makeTip(guess);
+            makeTip();
         }
     }
 
     private void validateGuess(String guess) {
-        if (guess.length() != rules.WORD_LENGTH() && !guess.isEmpty()) {
-            throw new GameException("Недопустимая длина слова. Текущие правила по длине слова: %d символов".formatted(rules.WORD_LENGTH()));
+
+        if (guess.isBlank()) {
+            throw new GameException("Строка не может состоять из пробелов!");
+        }
+
+        if (guess.length() != rules.wordLength() && !guess.isEmpty()) {
+            throw new GameException("Недопустимая длина слова. Текущие правила по длине слова: %d символов".formatted(rules.wordLength()));
         }
 
         for (Character symbol : guess.toCharArray()) {
@@ -151,9 +159,9 @@ public class WordleGame {
         return resolution.toString();
     }
 
-    private void makeTip(String guess) {
+    private void makeTip() {
         // получаем ключ для карты [слово-расшифрока] ––– [список подсказок]
-        Map.Entry<String, String> guessKey = Map.entry(guess, processGuess(guess));
+        Map.Entry<String, String> guessKey = Map.entry(GUESS_FOR_TIP.concat(String.valueOf(steps)), GUESS_FOR_TIP);
 
         // подсказки
         List<String> tips;
@@ -173,10 +181,10 @@ public class WordleGame {
 
         // получаем случайное слово из кандидатов в подсказки
         Random random = new Random();
-        int tipIndex = random.nextInt(0, tips.size());
+        int tipIndex = random.nextInt(tips.size());
         String tip = tips.get(tipIndex);
         while (usedTips.contains(tip)) {
-            tipIndex = random.nextInt(0, tips.size());
+            tipIndex = random.nextInt(tips.size());
             tip = tips.get(tipIndex);
         }
 
