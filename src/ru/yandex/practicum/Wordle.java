@@ -3,8 +3,6 @@ package ru.yandex.practicum;
 import ru.yandex.practicum.logger.GameLogger;
 import ru.yandex.practicum.logger.Logger;
 
-import java.io.IOException;
-
 /*
 в главном классе нам нужно:
     создать лог-файл (он должен передаваться во все классы)
