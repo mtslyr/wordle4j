@@ -68,7 +68,7 @@ public class WordleDictionaryLoader {
         return normalized;
     }
 
-    private boolean wordIsValid(String word) {
+    public boolean wordIsValid(String word) {
         if (word.isBlank()) {
             return false;
         }

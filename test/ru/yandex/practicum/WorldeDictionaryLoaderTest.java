@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -18,10 +19,10 @@ public class WorldeDictionaryLoaderTest extends WordleTest {
     public void shouldReadAllLines() throws IOException {
         int countLines = 0;
         Path dictionaryFile = Paths.get(System.getProperty("user.dir"), DICTIONARY_FILE_NAME);
-        BufferedReader br = new BufferedReader(new FileReader(dictionaryFile.toFile()));
+        BufferedReader br = Files.newBufferedReader(dictionaryFile);
             while (br.ready()) {
                 String word = br.readLine();
-                if (!word.isBlank() && !word.isEmpty()) {
+                if (dictionaryLoader.wordIsValid(word)) {
                     countLines++;
                 }
         }
