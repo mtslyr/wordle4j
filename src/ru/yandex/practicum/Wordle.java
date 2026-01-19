@@ -1,5 +1,8 @@
 package ru.yandex.practicum;
 
+import ru.yandex.practicum.logger.GameLogger;
+import ru.yandex.practicum.logger.Logger;
+
 /*
 в главном классе нам нужно:
     создать лог-файл (он должен передаваться во все классы)
@@ -10,9 +13,14 @@ package ru.yandex.practicum;
     вывести состояние игры и конечный результат
  */
 public class Wordle {
+    private static final Rules RULES = new Rules(5, 6);
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
+        try (Logger logger = new GameLogger()) {
+            WordleDictionaryLoader dictionaryLoader = new WordleDictionaryLoader(RULES, logger);
+            WordleDictionary dictionary = dictionaryLoader.loadDictionary();
+            WordleGame game = new WordleGame(dictionary, logger, RULES);
+            game.play();
+        }
     }
-
 }
